@@ -1,13 +1,16 @@
 package net.aidanjameskelly.whatstheweather;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -117,14 +120,22 @@ public class MainActivity extends AppCompatActivity {
 
         //grab our city name
         String cityName = cityEditText.getText().toString();
+        cityName = cityName.replaceAll("\\s+", "+");
+
+        if(cityName.endsWith("+")){
+            cityName = cityName.substring(0,cityName.length()-1);
+        }
 
         //create our api call and remove any whitespace
         String ourURL = firstHalf + cityName + secondHalf;
-        String ourURLNoSpaces = ourURL.replaceAll("\\s+", "");
 
         //download and process the json
         DownloadJSON downloadJSON = new DownloadJSON();
-        downloadJSON.execute(ourURLNoSpaces);
+        downloadJSON.execute(ourURL);
+
+        //hide keyboard on button press
+        InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.hideSoftInputFromWindow(cityEditText.getWindowToken(), 0);
     }
 
 }
