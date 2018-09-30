@@ -61,17 +61,25 @@ public class MainActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(s);
 
+                String toOutput = "";
+                String temp = "";
                 String weatherInfo = jsonObject.getString("weather");
-                Log.i("Weather", weatherInfo);
 
+                JSONObject mainObject = jsonObject.getJSONObject("main");
+                temp = mainObject.getString("temp");
+
+                toOutput =  temp + " degrees Celsius.\n";
                 JSONArray jsonArray = new JSONArray(weatherInfo);
 
                 for(int i=0; i<jsonArray.length(); i++){
                     JSONObject jsonPart = jsonArray.getJSONObject(i);
-                    outputTextView.setText(jsonPart.getString("main") + "\n" + jsonPart.getString("description"));
+                    toOutput += (jsonPart.getString("main") + ": " + jsonPart.getString("description") + "\n");
                 }
+
+                outputTextView.setText(toOutput);
             } catch (Exception e) {
                 e.printStackTrace();
+                outputTextView.setText("City not Found.");
             }
 
         }
